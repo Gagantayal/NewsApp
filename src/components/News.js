@@ -6,7 +6,8 @@ export class News extends Component {
     super();
     this.state= {
       article:[],
-      loading:false
+      loading:false,
+      page:1
     }
   }
 
@@ -15,8 +16,33 @@ export class News extends Component {
     let data = await fetch(url);
     let parseData = await data.json()
     console.log(parseData)
-    this.setState({article:parseData.articles})
+    this.setState({article:parseData.articles, 
+      totalarticle:parseData.totalResults
+    })
 
+ }
+
+ handleNextClick= async()=>{
+  if(this.state.page+1 > Math.ceil(this.state.totalResults/20)){}
+  else{
+  let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=3dcef5da1ef040f5b5fbb4c17fe4811b&page=${this.state.page + 1}&pageSize=20`
+  let data = await fetch(url);
+  let parseData = await data.json()
+  console.log(parseData)
+  this.setState({
+    page:this.state.page + 1,
+    article:parseData.articles
+  })}
+ }
+ handlePreviousclick=async()=>{
+  let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=3dcef5da1ef040f5b5fbb4c17fe4811b&page=${this.state.page - 1}&pageSize=20`
+  let data = await fetch(url);
+  let parseData = await data.json()
+  console.log(parseData)
+  this.setState({
+    page:this.state.page - 1,
+    article:parseData.articles
+  })
  }
 
   render() {
@@ -31,6 +57,10 @@ export class News extends Component {
              <Newsitem title={element.title?element.title.slice(0,45):""} description={element.description?element.description.slice(0,70):""} imageUrl={element.urlToImage} newsUrl={element.url}/>
             </div>
           })}
+      </div>
+      <div className="container d-flex justify-content-between">
+      <button disabled={this.state.page<=1} type="button" className="btn btn-info"onClick={this.handlePreviousclick}>&larr; Previous</button>
+      <button disabled={this.state.article.newsUrl===null}type="button" className="btn btn-info" onClick={this.handleNextClick}>Next &rarr;</button>
       </div>
     </div>
     </>
