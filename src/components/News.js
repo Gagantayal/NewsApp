@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import Newsitem from './Newsitem';
 import Spinner from './Spinner';
 import PropTypes from "prop-types";
+import InfiniteScroll from "react-infinite-scroll-component";
+
 
 export class News extends Component {
   static defaultProps = {
@@ -51,14 +53,32 @@ export class News extends Component {
   })
   this.updateNews()
  }
+ fetchMoreData=async()=>{
+  this.setState({page:this.state.page + 1})
+  const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=3dcef5da1ef040f5b5fbb4c17fe4811b&page=${this.state.page}&pageSize=${this.props.pageSize}`
+  this.setState({loading:true})
+  let data = await fetch(url);
+  let parseData = await data.json()
+  console.log(parseData)
+  this.setState({
+    article:this.state.article.concat(parseData.articles), 
+    totalarticle:parseData.totalResults,
+    loading:false
+  })
+ }
 
   render() {
     return (
       <>
-
-    <div className='container my-3'>
-      <h1 className="text-center">NewsMonkey - top Headlines....</h1>
-      {this.state.loading && <Spinner/>}
+      <h1 className="text-center">NewsMonkey - Top {this.props.category} Headlines....</h1>
+      {/* {this.state.loading && <Spinner/>} */}
+      <InfiniteScroll
+          dataLength={this.state.article.length} 
+          next={this.fetchMoreData}
+          hasMore={this.state.article!== this.state.totalarticle}
+          loader={<Spinner/>}
+        >
+         <div className="container"> 
         <div className='row'>
           {!this.state.loading && this.state.article.map((element)=>{
             return <div className='col-md-3 my-3' key={element.url}>
@@ -66,11 +86,9 @@ export class News extends Component {
             </div>
           })}
       </div>
-      <div className="container d-flex justify-content-between">
-      <button disabled={this.state.page<=1} type="button" className="btn btn-info"onClick={this.handlePreviousclick}>&larr; Previous</button>
-      <button disabled={this.state.page + 1 > Math.ceil(this.state.totalarticle/this.props.pageSize)}type="button" className="btn btn-info" onClick={this.handleNextClick}>Next &rarr;</button>
-      </div>
-    </div>
+      </div> 
+      </InfiniteScroll> 
+
     </>
     )
   }
