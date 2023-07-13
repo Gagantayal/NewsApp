@@ -22,13 +22,12 @@ export class News extends Component {
     super();
     this.state= {
       article:[],
-      loading:false,
+      loading:true,
       page:1
     }
   } 
   updateNews=  async()=>{
     const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=3dcef5da1ef040f5b5fbb4c17fe4811b&page=${this.state.page}&pageSize=${this.props.pageSize}`
-    this.setState({loading:true})
     let data = await fetch(url);
     let parseData = await data.json()
     console.log(parseData)
@@ -53,17 +52,15 @@ export class News extends Component {
   })
   this.updateNews()
  }
- fetchMoreData=async()=>{
+ fetchMoreData = async()=>{
   this.setState({page:this.state.page + 1})
   const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=3dcef5da1ef040f5b5fbb4c17fe4811b&page=${this.state.page}&pageSize=${this.props.pageSize}`
-  this.setState({loading:true})
   let data = await fetch(url);
   let parseData = await data.json()
   console.log(parseData)
   this.setState({
     article:this.state.article.concat(parseData.articles), 
-    totalarticle:parseData.totalResults,
-    loading:false
+    totalarticle:parseData.totalResults
   })
  }
 
@@ -71,18 +68,20 @@ export class News extends Component {
     return (
       <>
       <h1 className="text-center">NewsMonkey - Top {this.props.category} Headlines....</h1>
-      {/* {this.state.loading && <Spinner/>} */}
+      {/* {this.state.loading && <Spinner/>}  */}
       <InfiniteScroll
           dataLength={this.state.article.length} 
           next={this.fetchMoreData}
-          hasMore={this.state.article!== this.state.totalarticle}
+          hasMore={this.state.article.length !== this.state.totalarticle}
           loader={<Spinner/>}
         >
          <div className="container"> 
         <div className='row'>
-          {!this.state.loading && this.state.article.map((element)=>{
+          {this.state.article.map((element)=>{
             return <div className='col-md-3 my-3' key={element.url}>
-             <Newsitem title={element.title?element.title.slice(0,45):""} description={element.description?element.description.slice(0,70):""} imageUrl={element.urlToImage} newsUrl={element.url} author={element.author} date={element.publishedAt} source={element.source.name}/>
+             <Newsitem title={element.title?element.title.slice(0,45):""} description={element.description?element.description.slice(0,70):""} 
+             imageUrl={element.urlToImage} newsUrl={element.url} author={element.author} date={element.publishedAt} 
+             source={element.source.name}/>
             </div>
           })}
       </div>
