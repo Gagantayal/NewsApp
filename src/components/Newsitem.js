@@ -5,9 +5,11 @@ export class Newsitem extends Component {
     let {title,description,imageUrl,newsUrl,author,date,source} = this.props;
     return (
       <div>
-          <div className="card" style={{width:"19rem", height:"26.5rem"}} >
-          <span className="position-absolute top-0 translate-middle badge rounded-pill bg-danger" style={{left: "85%"}}>{source}</span>
-                <img src={!imageUrl?"https://img.republicworld.com/republic-prod/stories/promolarge/xhdpi/ebpqduahzlkecgih_1688732755.jpeg":imageUrl} style={{width:"18.9rem", height:"10rem"}} className="card-img-top" alt="..."/>
+          <div className="card">
+            <div  style={{position: 'absolute'}}>
+            <span className="badge rounded-pill bg-danger">{source}</span>
+            </div>
+                <img src={!imageUrl?"https://img.republicworld.com/republic-prod/stories/promolarge/xhdpi/ebpqduahzlkecgih_1688732755.jpeg":imageUrl} className="card-img-top" alt="..."/>
                 <div className="card-body">
                   <h5 className="card-title">{title}....</h5>
                   <p className="card-text">{description}...</p>
