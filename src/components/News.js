@@ -5,69 +5,156 @@ import PropTypes from "prop-types";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 
+
 export class News extends Component {
   static defaultProps = {
-    country:'in',
-    pageSize:16,
-    category:'general'
+    country: 'in',
+    pageSize: 16,
+    category: 'general'
   }
 
-  static propsType = {
+  static propTypes = {  // Corrected from propsType to propTypes
     country: PropTypes.string,
     pageSize: PropTypes.number,
-    category: PropTypes.string
+    category: PropTypes.string,
+    apiKey: PropTypes.string.isRequired,  // Added PropTypes for apiKey
+    setProgress: PropTypes.func.isRequired  // Assuming setProgress is passed as a prop
   }
 
-  constructor(){
+  constructor() {
     super();
-    this.state= {
-      article:[],
-      loading:true,
-      page:1
+    this.state = {
+      article: [],
+      loading: true,
+      page: 1
     }
-  } 
-  updateNews=  async()=>{
-    this.props.setProgress(0);
-    this.props.setProgress(20);
-    console.log(this.props.apiKey)
-    const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKey}&page=${this.state.page+1}&pageSize=${this.props.pageSize}`
-    let data = await fetch(url);
-    this.props.setProgress(40);
-    let parseData = await data.json()
-    this.props.setProgress(70);
-    this.setState({article:parseData.articles, 
-      totalarticle:parseData.totalResults,
-      loading:false
-    })  
-    this.props.setProgress(100);  
   }
- async componentDidMount(){
-  this.updateNews()
- }
 
- handleNextClick= async()=>{
-  this.setState({
-      page:this.state.page + 1
- })
- this.updateNews()
-}
- handlePreviousclick=async()=>{
-  this.setState({
-    page:this.state.page - 1
-  })
-  this.updateNews()
- }
- fetchMoreData = async()=>{
-   const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKey}&page=${this.state.page+1}&pageSize=${this.props.pageSize}`
-   this.setState({page:this.state.page + 1})
-  let data = await fetch(url);
-  let parseData = await data.json()
+  updateNews = async () => {
+    this.props.setProgress(0);
+    const { country, category, apiKey, pageSize } = this.props;
+    const { page } = this.state;
 
-  this.setState({
-    article:this.state.article.concat(parseData.articles), 
-    totalarticle:parseData.totalResults
-  })
- }
+    const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${category}&apiKey=${apiKey}&page=${page}&pageSize=${pageSize}`;
+    this.setState({ loading: true });
+    
+    this.props.setProgress(20);
+    let data = await fetch(url);
+    
+    this.props.setProgress(40);
+    let parseData = await data.json();
+    
+    this.props.setProgress(70);
+    this.setState({
+      article: parseData.articles,
+      totalarticle: parseData.totalResults,
+      loading: false
+    });
+    this.props.setProgress(100);
+  }
+
+  async componentDidMount() {
+    this.updateNews();
+  }
+
+  handleNextClick = async () => {
+    this.setState((prevState) => ({
+      page: prevState.page + 1
+    }), this.updateNews);  // Callback ensures updateNews is called after setState
+  }
+
+  handlePreviousClick = async () => {
+    this.setState((prevState) => ({
+      page: prevState.page - 1
+    }), this.updateNews);  // Callback ensures updateNews is called after setState
+  }
+
+  fetchMoreData = async () => {
+    const { country, category, apiKey, pageSize } = this.props;
+    const { page } = this.state;
+
+    const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${category}&apiKey=${apiKey}&page=${page + 1}&pageSize=${pageSize}`;
+    
+    this.setState((prevState) => ({ page: prevState.page + 1 }));
+
+    let data = await fetch(url);
+    let parseData = await data.json();
+
+    this.setState((prevState) => ({
+      article: prevState.article.concat(parseData.articles),
+      totalarticle: parseData.totalResults
+    }));
+  }
+
+
+
+
+
+
+
+// export class News extends Component {
+//   static defaultProps = {
+//     country:'in',
+//     pageSize:16,
+//     category:'general'
+//   }
+
+//   static propsType = {
+//     country: PropTypes.string,
+//     pageSize: PropTypes.number,
+//     category: PropTypes.string
+//   }
+
+//   constructor(){
+//     super();
+//     this.state= {
+//       article:[],
+//       loading:true,
+//       page:1
+//     }
+//   } 
+//   updateNews=  async()=>{
+//     this.props.setProgress(0);
+//     this.props.setProgress(20);
+//     console.log(this.props.apiKey)
+//     const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKey}&page=${this.state.page+1}&pageSize=${this.props.pageSize}`
+//     let data = await fetch(url);
+//     this.props.setProgress(40);
+//     let parseData = await data.json()
+//     this.props.setProgress(70);
+//     this.setState({article:parseData.articles, 
+//       totalarticle:parseData.totalResults,
+//       loading:false
+//     })  
+//     this.props.setProgress(100);  
+//   }
+//  async componentDidMount(){
+//   this.updateNews()
+//  }
+
+//  handleNextClick= async()=>{
+//   this.setState({
+//       page:this.state.page + 1
+//  })
+//  this.updateNews()
+// }
+//  handlePreviousclick=async()=>{
+//   this.setState({
+//     page:this.state.page - 1
+//   })
+//   this.updateNews()
+//  }
+//  fetchMoreData = async()=>{
+//    const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKey}&page=${this.state.page+1}&pageSize=${this.props.pageSize}`
+//    this.setState({page:this.state.page + 1})
+//   let data = await fetch(url);
+//   let parseData = await data.json()
+
+//   this.setState({
+//     article:this.state.article.concat(parseData.articles), 
+//     totalarticle:parseData.totalResults
+//   })
+//  }
 
   render() {
     return (
