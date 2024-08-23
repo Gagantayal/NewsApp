@@ -82,7 +82,7 @@ export class News extends Component {
         >
          <div className="container"> 
         <div className='row'>
-          {this.state.article.map((element)=>{
+          {/* {this.state.article.map((element)=>{
             return <div className='col-md-3 my-3' key={element.url}>
              <Newsitem title={element.title?element.title.slice(0,45):""} description={element.description?element.description.slice(0,70):""} 
              imageUrl={element.urlToImage} newsUrl={element.url} author={element.author} date={element.publishedAt} 
@@ -90,7 +90,27 @@ export class News extends Component {
              />
 
             </div>
-          })}
+          })} */}
+          {this.state.article && this.state.article.length > 0 ? (
+    this.state.article.map((element) => {
+        return (
+            <div className='col-md-3 my-3' key={element.url}>
+                <Newsitem
+                    title={element.title ? element.title.slice(0, 45) : "No Title Available"}
+                    description={element.description ? element.description.slice(0, 70) : "No Description Available"}
+                    imageUrl={element.urlToImage ? element.urlToImage : "https://thumbs.dreamstime.com/b/news-newspapers-folded-stacked-word-wooden-block-puzzle-dice-concept-newspaper-media-press-release-42301371.jpg"}
+                    newsUrl={element.url}
+                    author={element.author ? element.author : "Unknown"}
+                    date={element.publishedAt ? new Date(element.publishedAt).toLocaleDateString() : "Unknown Date"}
+                    source={element.source && element.source.name ? element.source.name : "Unknown Source"}
+                />
+            </div>
+        );
+    })
+) : (
+    <div>No articles available</div>
+)}
+
       </div>
       </div> 
       </InfiniteScroll> 
