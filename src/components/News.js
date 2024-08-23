@@ -72,19 +72,29 @@ export class News extends Component {
   fetchMoreData = async () => {
     const { country, category, apiKey, pageSize } = this.props;
     const { page } = this.state;
-
+  
     const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${category}&apiKey=${apiKey}&page=${page + 1}&pageSize=${pageSize}`;
     
-    this.setState((prevState) => ({ page: prevState.page + 1 }));
-
-    let data = await fetch(url);
-    let parseData = await data.json();
-
-    this.setState((prevState) => ({
-      article: prevState.article.concat(parseData.articles),
-      totalarticle: parseData.totalResults
-    }));
-  }
+    try {
+      let response = await fetch(url);
+      
+      // Check if the response status is OK (200-299)
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      
+      let data = await response.json();
+      this.setState((prevState) => ({
+        article: prevState.article.concat(data.articles),
+        totalarticle: data.totalResults,
+        page: prevState.page + 1
+      }));
+    } catch (error) {
+      console.error('Error fetching data:', error.message);
+      // Optionally, update the state to show an error message to the user
+    }
+  };
+  
 
 
 
