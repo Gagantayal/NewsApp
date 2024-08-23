@@ -10,8 +10,8 @@ import {
 } from "react-router-dom";
 
 export default class App extends Component {
-apiKey = '3dcef5da1ef040f5b5fbb4c17fe4811b'
-  //process.env.REACT_APP_NEWS_API
+//apiKey = '3dcef5da1ef040f5b5fbb4c17fe4811b'
+ apiKey = process.env.REACT_APP_NEWS_API
   state={  
     progress:0
   }
@@ -22,8 +22,8 @@ apiKey = '3dcef5da1ef040f5b5fbb4c17fe4811b'
   render() {
     return ( 
       <div>
-        <BrowserRouter> 
-        <Navbar/> 
+        <BrowserRouter basename='/NewsApp'> 
+        <Navbar/>  
         <LoadingBar
         height={3}  
         color='#f11946'

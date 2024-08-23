@@ -62,6 +62,7 @@ export class News extends Component {
    this.setState({page:this.state.page + 1})
   let data = await fetch(url);
   let parseData = await data.json()
+
   this.setState({
     article:this.state.article.concat(parseData.articles), 
     totalarticle:parseData.totalResults
@@ -85,7 +86,9 @@ export class News extends Component {
             return <div className='col-md-3 my-3' key={element.url}>
              <Newsitem title={element.title?element.title.slice(0,45):""} description={element.description?element.description.slice(0,70):""} 
              imageUrl={element.urlToImage} newsUrl={element.url} author={element.author} date={element.publishedAt} 
-             source={element.source.name}/>
+             source={element.source.name}
+             />
+
             </div>
           })}
       </div>
