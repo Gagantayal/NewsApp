@@ -9,11 +9,11 @@ import {
   BrowserRouter,
 } from "react-router-dom";
 
-export default class App extends Component {
-//apiKey = '3dcef5da1ef040f5b5fbb4c17fe4811b'
+export default class App extends Component { 
+//apiKey = '3dcef5da1ef040f5b5fbb4c17fe4811b' 
  apiKey = process.env.REACT_APP_NEWS_API
   state={  
-    progress:0
+    progress:0 
   }
   setProgress=(progress)=>{
     this.setState({progress:progress})
