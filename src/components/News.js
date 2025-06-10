@@ -6,7 +6,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 export class News extends Component {
   static defaultProps = {
-    country: 'in',
+    country: 'us',
     pageSize: 16,
     category: 'general'
   }
@@ -92,30 +92,6 @@ export class News extends Component {
       // Optionally, update the state to show an error message to the user
     }
   };
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   render() {
     return (
